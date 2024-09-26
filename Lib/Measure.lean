@@ -1,6 +1,6 @@
 import Batteries.Data.Rat.Basic
 
-namespace Measure
+namespace MusicCompositionLang
 
 structure Measure where
   n: Rat

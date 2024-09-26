@@ -1,4 +1,4 @@
-namespace Pitch
+namespace MusicCompositionLang
 
 inductive Pitch where
   | zero : Pitch
@@ -17,7 +17,7 @@ inductive Pitch where
   | Lower : Pitch -> Pitch
 deriving Repr
 
-def toNat : Pitch -> Nat
+def Pitch.toNat : Pitch -> Nat
   | Pitch.zero => 0
   | Pitch.one => 1
   | Pitch.two => 2
@@ -33,7 +33,7 @@ def toNat : Pitch -> Nat
   | Pitch.Upper p => toNat p + 12
   | Pitch.Lower p => toNat p - 12
 
-def fromNat : Nat -> Pitch
+def Pitch.fromNat : Nat -> Pitch
   | 0 => Pitch.zero
   | 1 => Pitch.one
   | 2 => Pitch.two
@@ -48,13 +48,17 @@ def fromNat : Nat -> Pitch
   | 11 => Pitch.eleven
   | n + 12 => Pitch.Upper (fromNat n)
 
-def add : Pitch -> Nat -> Pitch := fun p n => fromNat (toNat p + n)
+def Pitch.add : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p + n)
 
-def sub : Pitch -> Nat -> Pitch := fun p n => fromNat (toNat p - n)
+def Pitch.sub : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p - n)
 
 instance : HAdd Pitch Nat Pitch where
-  hAdd := add
+  hAdd := Pitch.add
 
 instance : HSub Pitch Nat Pitch where
-  hSub := sub
+  hSub := Pitch.sub
+
+def Pitch.upOctave : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p + n*12)
+
+def Pitch.downOctave : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p - n*12)
 

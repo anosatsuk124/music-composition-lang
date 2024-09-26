@@ -1,4 +1,4 @@
-namespace PitchClass
+namespace MusicCompositionLang
 
 inductive PitchClass where
   | zero : PitchClass
@@ -15,7 +15,7 @@ inductive PitchClass where
   | eleven : PitchClass
 deriving Repr
 
-def toNat : PitchClass -> Nat
+def PitchClass.toNat : PitchClass -> Nat
   | PitchClass.zero => 0
   | PitchClass.one => 1
   | PitchClass.two => 2
@@ -29,7 +29,7 @@ def toNat : PitchClass -> Nat
   | PitchClass.ten => 10
   | PitchClass.eleven => 11
 
-def fromNat : Nat -> PitchClass
+def PitchClass.fromNat : Nat -> PitchClass
   | 0 => PitchClass.zero
   | 1 => PitchClass.one
   | 2 => PitchClass.two
@@ -45,5 +45,5 @@ def fromNat : Nat -> PitchClass
   | n + 12  => fromNat n
 
 instance : ToString PitchClass where
-  toString pc := toString (toNat pc)
+  toString pc := toString (PitchClass.toNat pc)
 
