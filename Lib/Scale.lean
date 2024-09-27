@@ -2,7 +2,7 @@ import Lib.PitchClass
 
 namespace MusicCompositionLang
 
-def Scale := List PitchClass
+abbrev Scale := List PitchClass
 
 def Scale.fromPitchClasses (l : List PitchClass) : Scale := l
 

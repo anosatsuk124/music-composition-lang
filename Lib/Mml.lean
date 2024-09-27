@@ -1,10 +1,14 @@
+import Lib.Note
 import Lib.Pitch
+import Lib.Score
 
 namespace MusicCompositionLang
 
-def toMmlString : Pitch -> String
-  | Pitch.Lower p => "<" ++ toMmlString p ++ ">"
-  | Pitch.Upper p => ">" ++ toMmlString p ++ "<"
+abbrev Mml : Type := String
+
+def Pitch.toMmlCode : Pitch -> Mml
+  | Pitch.Lower p => "<" ++ Pitch.toMmlCode p ++ ">"
+  | Pitch.Upper p => ">" ++ Pitch.toMmlCode p ++ "<"
   | Pitch.zero => "c"
   | Pitch.one => "c#"
   | Pitch.two => "d"
@@ -18,27 +22,41 @@ def toMmlString : Pitch -> String
   | Pitch.ten => "a#"
   | Pitch.eleven => "b"
 
-def fromMmlString : String -> Option Pitch
-  | "c-" => Pitch.Lower Pitch.eleven
-  | "c" => Pitch.zero
-  | "c#" => Pitch.one
-  | "d-" => Pitch.one
-  | "d" => Pitch.two
-  | "d#" => Pitch.three
-  | "e-" => Pitch.three
-  | "e" => Pitch.four
-  | "e#" => Pitch.five
-  | "f-" => Pitch.four
-  | "f" => Pitch.five
-  | "f#" => Pitch.six
-  | "g-" => Pitch.six
-  | "g" => Pitch.seven
-  | "g#" => Pitch.eight
-  | "a-" => Pitch.eight
-  | "a" => Pitch.nine
-  | "a#" => Pitch.ten
-  | "b-" => Pitch.ten
-  | "b" => Pitch.eleven
-  | "b#" => Pitch.Upper Pitch.zero
+
+def Note.toMmlCode : Note -> Mml
+  | Note.Pitch p => p.toMmlCode
+  | Note.Rest => "r"
+  | Note.MmlCode code => code
+  | Note.InScale scale p =>
+    let p' := Pitch.toNat p
+    scale.get! p' |>.toNat |> Pitch.fromNat |>.toMmlCode
+
+def Mml.fromMmlCode : Mml -> Option Note
+  | "c-" => Note.Pitch $ Pitch.Lower Pitch.eleven
+  | "c" => Note.Pitch $ Pitch.zero
+  | "c#" => Note.Pitch $ Pitch.one
+  | "d-" => Note.Pitch $ Pitch.one
+  | "d" => Note.Pitch $ Pitch.two
+  | "d#" => Note.Pitch $ Pitch.three
+  | "e-" => Note.Pitch $ Pitch.three
+  | "e" => Note.Pitch $ Pitch.four
+  | "e#" => Note.Pitch $ Pitch.five
+  | "f-" => Note.Pitch $ Pitch.four
+  | "f" => Note.Pitch $ Pitch.five
+  | "f#" => Note.Pitch $ Pitch.six
+  | "g-" => Note.Pitch $ Pitch.six
+  | "g" => Note.Pitch $ Pitch.seven
+  | "g#" => Note.Pitch $ Pitch.eight
+  | "a-" => Note.Pitch $ Pitch.eight
+  | "a" => Note.Pitch $ Pitch.nine
+  | "a#" => Note.Pitch $ Pitch.ten
+  | "b-" => Note.Pitch $ Pitch.ten
+  | "b" => Note.Pitch $ Pitch.eleven
+  | "b#" => Note.Pitch $ Pitch.Upper Pitch.zero
+  | "r" => Note.Rest
   | _ => none
+
+def Score.toMmlCode : Score -> Mml
+  | [] => ""
+  | note :: rest => note.toMmlCode ++ Score.toMmlCode rest
 

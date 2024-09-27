@@ -13,7 +13,7 @@ inductive PitchClass where
   | nine : PitchClass
   | ten : PitchClass
   | eleven : PitchClass
-deriving Repr
+deriving Repr, Inhabited
 
 def PitchClass.toNat : PitchClass -> Nat
   | PitchClass.zero => 0

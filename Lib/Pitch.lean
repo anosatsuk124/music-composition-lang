@@ -17,6 +17,8 @@ inductive Pitch where
   | Lower : Pitch -> Pitch
 deriving Repr
 
+abbrev InScalePitch := Pitch
+
 def Pitch.toNat : Pitch -> Nat
   | Pitch.zero => 0
   | Pitch.one => 1
