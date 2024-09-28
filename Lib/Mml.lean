@@ -7,7 +7,7 @@ namespace MusicCompositionLang
 abbrev Mml : Type := String
 
 def Pitch.toMmlCode : Pitch -> Mml := fun p =>
-  let tomml := fun p => match p with
+  let rec tomml : Pitch -> Mml := fun p => match p with
     | Pitch.zero => "c"
     | Pitch.one => "c#"
     | Pitch.two => "d"
@@ -21,11 +21,12 @@ def Pitch.toMmlCode : Pitch -> Mml := fun p =>
     | Pitch.ten => "a#"
     | Pitch.eleven => "b"
     | _ => ""
-  let mml := match p with
-    | Pitch.Lower p => "<" ++ tomml p ++ ">"
-    | Pitch.Upper p => ">" ++ tomml p ++ "<"
+  let rec mml : Pitch -> Mml := fun p => match p with
+    | Pitch.Lower p => "<" ++ mml p ++ ">"
+    | Pitch.Upper p => ">" ++ mml p ++ "<"
     | _ => tomml p
-   "{" ++ mml ++ "}"
+
+  "{" ++ mml p ++ "}"
 
 def Pitch.fromMmlCode : Mml -> Option Pitch
   | "c-" => Pitch.Lower Pitch.eleven

@@ -1,27 +1,24 @@
-import Lib.PitchClass
+import Lib.Pitch
 
 namespace MusicCompositionLang
 
-abbrev Scale := List PitchClass
+abbrev Scale := List Pitch
 
 instance : Inhabited Scale where
   default := [
-    PitchClass.zero,
-    PitchClass.two,
-    PitchClass.four,
-    PitchClass.five,
-    PitchClass.seven,
-    PitchClass.nine,
-    PitchClass.eleven
+    Pitch.zero,
+    Pitch.two,
+    Pitch.four,
+    Pitch.five,
+    Pitch.seven,
+    Pitch.nine,
+    Pitch.eleven
   ]
 
-def Scale.fromPitchClasses (l : List PitchClass) : Scale := l
+def Scale.fromPitches (l : List Pitch) : Scale := l
 
-def Scale.toPitchClasses (s : Scale) : List PitchClass := s
+def Scale.toPitches (s : Scale) : List Pitch := s
 
-def Scale.get (index: Nat) (s : Scale) : PitchClass :=
-  s |>.get! (index % s.length)
-
-instance : ToString Scale where
-  toString s := toString s.toPitchClasses
+def Scale.get (s : Scale) (index: Nat) : Pitch :=
+  s |>.get! (index % (s.length))
 

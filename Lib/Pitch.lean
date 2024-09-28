@@ -15,11 +15,11 @@ inductive Pitch where
   | eleven : Pitch
   | Upper : Pitch -> Pitch
   | Lower : Pitch -> Pitch
-deriving Repr
+deriving Repr, Inhabited
 
 abbrev InScalePitch := Pitch
 
-def Pitch.toNat : Pitch -> Nat
+def Pitch.toInt : Pitch -> Int
   | Pitch.zero => 0
   | Pitch.one => 1
   | Pitch.two => 2
@@ -32,8 +32,8 @@ def Pitch.toNat : Pitch -> Nat
   | Pitch.nine => 9
   | Pitch.ten => 10
   | Pitch.eleven => 11
-  | Pitch.Upper p => toNat p + 12
-  | Pitch.Lower p => toNat p - 12
+  | Pitch.Upper p => Pitch.toInt p + 12
+  | Pitch.Lower p => Pitch.toInt p - 12
 
 def Pitch.fromNat : Nat -> Pitch
   | 0 => Pitch.zero
@@ -50,9 +50,63 @@ def Pitch.fromNat : Nat -> Pitch
   | 11 => Pitch.eleven
   | n + 12 => Pitch.Upper (fromNat n)
 
-def Pitch.add : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p + n)
+def Pitch.succ : Pitch -> Pitch
+  | Pitch.zero => Pitch.one
+  | Pitch.one => Pitch.two
+  | Pitch.two => Pitch.three
+  | Pitch.three => Pitch.four
+  | Pitch.four => Pitch.five
+  | Pitch.five => Pitch.six
+  | Pitch.six => Pitch.seven
+  | Pitch.seven => Pitch.eight
+  | Pitch.eight => Pitch.nine
+  | Pitch.nine => Pitch.ten
+  | Pitch.ten => Pitch.eleven
+  | Pitch.eleven => Pitch.Upper Pitch.zero
+  | Pitch.Upper p => Pitch.Upper (Pitch.succ p)
+  | Pitch.Lower p => 
+    match p with
+      | Pitch.eleven => Pitch.zero
+      | _ => Pitch.Lower (Pitch.succ p)
 
-def Pitch.sub : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p - n)
+#eval Pitch.Upper Pitch.eleven |>.succ
+
+def Pitch.pred : Pitch -> Pitch
+  | Pitch.zero => Pitch.Lower Pitch.eleven
+  | Pitch.one => Pitch.zero
+  | Pitch.two => Pitch.one
+  | Pitch.three => Pitch.two
+  | Pitch.four => Pitch.three
+  | Pitch.five => Pitch.four
+  | Pitch.six => Pitch.five
+  | Pitch.seven => Pitch.six
+  | Pitch.eight => Pitch.seven
+  | Pitch.nine => Pitch.eight
+  | Pitch.ten => Pitch.nine
+  | Pitch.eleven => Pitch.ten
+  | Pitch.Lower p =>  Pitch.Lower (Pitch.pred p)
+  | Pitch.Upper p =>
+    match p with
+      | Pitch.zero => Pitch.eleven
+      | _ => Pitch.Upper (Pitch.pred p)
+
+instance : LT Pitch where
+  lt := fun p1 p2 => (Pitch.toInt p1) < (Pitch.toInt p2)
+
+instance: LE Pitch where
+  le := fun p1 p2 => (Pitch.toInt p1) <= (Pitch.toInt p2)
+
+def Pitch.add : Pitch -> Nat -> Pitch := fun p n =>
+  let rec addAux : Pitch -> Nat -> Pitch
+    | p, 0 => p
+    | p, n + 1 => addAux p.succ n
+  addAux p n
+
+def Pitch.sub : Pitch -> Nat -> Pitch := fun p n =>
+  let rec subAux : Pitch -> Nat -> Pitch
+    | p, 0 => p
+    | p, n + 1 => subAux p.pred n
+  subAux p n
 
 instance : HAdd Pitch Nat Pitch where
   hAdd := Pitch.add
@@ -60,9 +114,17 @@ instance : HAdd Pitch Nat Pitch where
 instance : HSub Pitch Nat Pitch where
   hSub := Pitch.sub
 
-def Pitch.upOctave : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p + n*12)
+def Pitch.upOctave : Pitch -> Nat -> Pitch := fun p n =>
+  let rec upAux : Pitch -> Nat -> Pitch
+    | p, 0 => p
+    | p, n + 1 => upAux (p + 12) n
+  upAux p n
 
-def Pitch.downOctave : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p - n*12)
+def Pitch.downOctave : Pitch -> Nat -> Pitch := fun p n =>
+  let rec downAux : Pitch -> Nat -> Pitch
+    | p, 0 => p
+    | p, n + 1 => downAux (p - 12) n
+  downAux p n
 
-def Pitch.getOctave : Pitch -> Nat := fun p => (Pitch.toNat p) / 12
+def Pitch.getOctave : Pitch -> Int := fun p => (Pitch.toInt p) / 12
 
