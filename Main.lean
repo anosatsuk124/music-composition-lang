@@ -3,7 +3,7 @@ import MusicCompositionLang
 open MusicCompositionLang
 
 def main : IO Unit := do
-    let scale := [0, 2, 3, 5, 7, 8, 10].map (fun x => (Pitch.fromNat x) - 3)
+    let scale := [-3, -3, 0, 2, 4, 5, 7].map (fun x => Pitch.fromInt x)
       |> Scale.fromPitches
     IO.println $ "Scale: " ++ reprStr scale
 

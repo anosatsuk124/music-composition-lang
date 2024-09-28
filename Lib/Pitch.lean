@@ -50,6 +50,25 @@ def Pitch.fromNat : Nat -> Pitch
   | 11 => Pitch.eleven
   | n + 12 => Pitch.Upper (fromNat n)
 
+def Pitch.fromInt : Int -> Pitch
+  | Int.ofNat n => fromNat n
+  | Int.negSucc n =>
+    let rec fromNeg: Nat -> Pitch := fun n => match n with
+      | 0 => Pitch.Lower Pitch.eleven
+      | 1 => Pitch.Lower Pitch.ten
+      | 2 => Pitch.Lower Pitch.nine
+      | 3 => Pitch.Lower Pitch.eight
+      | 4 => Pitch.Lower Pitch.seven
+      | 5 => Pitch.Lower Pitch.six
+      | 6 => Pitch.Lower Pitch.five
+      | 7 => Pitch.Lower Pitch.four
+      | 8 => Pitch.Lower Pitch.three
+      | 9 => Pitch.Lower Pitch.two
+      | 10 => Pitch.Lower Pitch.one
+      | 11 => Pitch.Lower Pitch.zero
+      | n + 1 => Pitch.Lower (fromNeg n)
+    fromNeg (n)
+
 def Pitch.succ : Pitch -> Pitch
   | Pitch.zero => Pitch.one
   | Pitch.one => Pitch.two
