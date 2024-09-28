@@ -66,8 +66,8 @@ def Pitch.fromInt : Int -> Pitch
       | 9 => Pitch.Lower Pitch.two
       | 10 => Pitch.Lower Pitch.one
       | 11 => Pitch.Lower Pitch.zero
-      | n + 1 => Pitch.Lower (fromNeg n)
-    fromNeg (n)
+      | n + 12 => Pitch.Lower (fromNeg n)
+    fromNeg n
 
 def Pitch.succ : Pitch -> Pitch
   | Pitch.zero => Pitch.one
