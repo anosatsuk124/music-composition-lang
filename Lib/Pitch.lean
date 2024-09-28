@@ -69,8 +69,6 @@ def Pitch.succ : Pitch -> Pitch
       | Pitch.eleven => Pitch.zero
       | _ => Pitch.Lower (Pitch.succ p)
 
-#eval Pitch.Upper Pitch.eleven |>.succ
-
 def Pitch.pred : Pitch -> Pitch
   | Pitch.zero => Pitch.Lower Pitch.eleven
   | Pitch.one => Pitch.zero
