@@ -6,21 +6,26 @@ namespace MusicCompositionLang
 
 abbrev Mml : Type := String
 
-def Pitch.toMmlCode : Pitch -> Mml
-  | Pitch.Lower p => "<" ++ Pitch.toMmlCode p ++ ">"
-  | Pitch.Upper p => ">" ++ Pitch.toMmlCode p ++ "<"
-  | Pitch.zero => "c"
-  | Pitch.one => "c#"
-  | Pitch.two => "d"
-  | Pitch.three => "d#"
-  | Pitch.four => "e"
-  | Pitch.five => "f"
-  | Pitch.six => "f#"
-  | Pitch.seven => "g"
-  | Pitch.eight => "g#"
-  | Pitch.nine => "a"
-  | Pitch.ten => "a#"
-  | Pitch.eleven => "b"
+def Pitch.toMmlCode : Pitch -> Mml := fun p =>
+  let tomml := fun p => match p with
+    | Pitch.zero => "c"
+    | Pitch.one => "c#"
+    | Pitch.two => "d"
+    | Pitch.three => "d#"
+    | Pitch.four => "e"
+    | Pitch.five => "f"
+    | Pitch.six => "f#"
+    | Pitch.seven => "g"
+    | Pitch.eight => "g#"
+    | Pitch.nine => "a"
+    | Pitch.ten => "a#"
+    | Pitch.eleven => "b"
+    | _ => ""
+  let mml := match p with
+    | Pitch.Lower p => "<" ++ tomml p ++ ">"
+    | Pitch.Upper p => ">" ++ tomml p ++ "<"
+    | _ => tomml p
+   "{" ++ mml ++ "}"
 
 def Pitch.fromMmlCode : Mml -> Option Pitch
   | "c-" => Pitch.Lower Pitch.eleven
@@ -48,12 +53,9 @@ def Pitch.fromMmlCode : Mml -> Option Pitch
 
 
 def Note.toMmlCode : Note -> Mml
-  | Note.Pitch p _ => p |> Pitch.toMmlCode
-  | Note.Rest _ => "r"
+  | Note.Pitch p d => p |> Pitch.toMmlCode |>.append $ d |> toString
+  | Note.Rest d => "r" |>.append $ d |> toString
   | Note.MmlCode code => code
-  | Note.InScale scale p _ =>
-    let p' := Pitch.toNat p
-    scale.get! p' |>.toNat |> Pitch.fromNat |>.toMmlCode
 
 def Score.toMmlCode : Score -> Mml
   | [] => ""

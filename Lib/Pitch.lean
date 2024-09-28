@@ -64,3 +64,5 @@ def Pitch.upOctave : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.to
 
 def Pitch.downOctave : Pitch -> Nat -> Pitch := fun p n => Pitch.fromNat (Pitch.toNat p - n*12)
 
+def Pitch.getOctave : Pitch -> Nat := fun p => (Pitch.toNat p) / 12
+
