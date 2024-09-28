@@ -4,8 +4,6 @@ import Lib.Scale
 
 namespace MusicCompositionLang
 
--- abbrev Duration := Option Rat
-
 inductive Duration where
   | num : Nat -> Duration
   | Dot : Duration -> Duration
